@@ -20,12 +20,13 @@ router.post('/insert', function (req, res) {
     const jobOffer = req.body;
     console.log(jobOffer);
 
-    jobOfferModel(jobOffer).save((error) => {
+    jobOfferModel(jobOffer).save((error, job) => {
         if (error) {
             console.log(error)
             res.send(error)
         } else {
-            res.send('insert successful');
+            console.log(job.id)
+            res.send(job.id);
         }
     })
 })
