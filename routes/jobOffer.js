@@ -38,7 +38,7 @@ router.get('/myJobOffers', function (req, res){
 })
 
 router.get('/:id', function (req, res) {
-    console.log(req.params.id);
+    // console.log(req.params.id);
      jobOfferModel.find({_id: req.params.id}).then(function (job) {
         //  console.log(job[0]);
          res.send(job[0]);
