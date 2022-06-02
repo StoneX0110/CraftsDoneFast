@@ -29,7 +29,13 @@ const JobOfferSchema = new mongoose.Schema({
   updated_date: {
     type: Date,
     default: Date.now
-  }
+  },
+  images: [
+    {
+        data: Buffer,
+        contentType: String
+    }
+  ],
 });
 
 module.exports = JobOffer = mongoose.model('jobOffer', JobOfferSchema);

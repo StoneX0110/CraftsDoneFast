@@ -23,7 +23,8 @@ mongoose.connect(database.db, {
 const app = express();
 const port = process.env.PORT || 5000;
 // parse application/json
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}))
+// app.use(bodyParser({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true }))
 
 
