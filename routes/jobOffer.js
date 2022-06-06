@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-
+const authJwt = require('../authentication/auth');
+const verifyToken = authJwt.verifyToken;
 // Load Book model
 const jobOfferModel = require('../models/JobOffer');
 
@@ -18,7 +19,7 @@ router.get('/test', function (req, res) {
     res.send('Hello World');
 })
 
-router.post('/insert', insertJobOffer
+router.route('/insert').post([verifyToken], insertJobOffer
 // function (req, res) {
 //     const jobOffer = req.body;
 //     console.log(jobOffer);

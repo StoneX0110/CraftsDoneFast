@@ -7,7 +7,8 @@ exports.getJobOffers = ((req, res) => {
 });
 
 exports.getJobOffer = ((req, res) => {
-    jobOfferModel.find({_id: req.params.id}).then(function (job) {
+    //only populate the username of author. password ofc should not be exposed.
+    jobOfferModel.find({_id: req.params.id}).populate('author', {username: 1}).then(function (job) {
         // console.log(__dirname);
         // console.log(job[0]);
         // console.log(job[0].images.toString('base64'));
@@ -25,6 +26,7 @@ exports.getJobOffer = ((req, res) => {
         // console.log(foo.images[0].data)
         // console.log(foo);
         // console.log(job[0]);
+        console.log(job[0]);
         res.send(job[0]);
     })
 });
@@ -35,6 +37,7 @@ exports.insertJobOffer = ((req, res) => {
     
     // { data: new Buffer.from(req.file.buffer, 'base64'), contentType: req.file.mimetype }
     const jobOffer = req.body;
+    jobOffer.author = req.userId;
     // console.log(jobOffer.images[0]);
     const transformedImage = [];
     jobOffer.images.forEach(element => {

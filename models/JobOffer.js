@@ -15,10 +15,7 @@ const JobOfferSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  author: {
-    type: String,
-    default: "anonym"
-  },
+  author: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   insertionDate: {
     type: Date,
     default: Date.now
