@@ -5,7 +5,7 @@ https://dev.to/kevin_odongo35/jwt-authorization-and-authentication-node-express-
 */
 
 const crypto = require('crypto');
-let User = require('../models/authentication/User');
+const userModel = require('../models/User');
 
 
 
@@ -13,18 +13,21 @@ var jwt = require("jsonwebtoken");
 var bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
-    const user = new User({
+  // res.send({success: "ok"});
+    const user = {
       username: req.body.username,
       password: bcrypt.hashSync(req.body.password, 8),
-    });
-    User.create(user, err => {
+    };
+    userModel.create(user, err => {
       if (err) {
         res.status(500).send({ message: "User could not be created: " + err });
         return;
       }
       res.send({ message: "User was registered successfully!" });
     });
-  
+
+
+
   /*
   User.create((err, user) => {
     if (err) {
@@ -83,10 +86,9 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  User.findOne({
+  userModel.findOne({
     username: req.body.username
   })
-    .populate("roles", "-__v")
     .exec((err, user) => {
       if (err) {
         res.status(500).send({ message: err });

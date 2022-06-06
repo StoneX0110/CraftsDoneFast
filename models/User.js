@@ -2,7 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let userSchema = new Schema({
-    username: String,
+    username: {
+        type: String,
+        unique: true,
+    },
     password: String,
     profileBoost: Boolean,
     settings: {
@@ -17,7 +20,6 @@ let userSchema = new Schema({
         data: Buffer,
         contentType: String
     },
-    timestamps: true
 },
     {
         collection: 'User'

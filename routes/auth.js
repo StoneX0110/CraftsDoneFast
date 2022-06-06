@@ -1,16 +1,16 @@
-const { verify_user } = require("../authentication")
+const authJwt  = require("../authentication/auth")
 const express = require("express")
 const router = express.Router()
-const auth = require("../controller/auth.controller");
+const { signin, signup } = require("../controllers/auth");
 
 
-router.post("/signin", auth.signin);
+router.post("/signin", signin);
 
 router.post("/signup",
     [
-        verify_user.checkDuplicateUsername,
+        authJwt.checkDuplicateUsername,
     ],
-    auth.signup
+    signup
 )
 
 

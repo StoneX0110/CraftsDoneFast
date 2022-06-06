@@ -6,7 +6,7 @@ https://dev.to/kevin_odongo35/jwt-authorization-and-authentication-node-express-
 
 
 const jwt = require("jsonwebtoken");
-let User = require('../models/authentication/User');
+const userModel = require('../models/User');
 
 verifyToken = (req, res, next) => {
   let token = req.headers["x-access-token"];
@@ -28,7 +28,7 @@ verifyToken = (req, res, next) => {
 
 checkDuplicateUsername = (req, res, next) => {
     // Username
-    User.findOne({
+    userModel.findOne({
       username: req.body.username
     }).exec((err, user) => {
       if (err) {

@@ -29,7 +29,9 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 
 const jobOfferAPI = require('./routes/jobOffer');
+const authAPI = require('./routes/auth');
 app.use('/api/jobOffer', jobOfferAPI);
+app.use('/api/auth', authAPI);
 
 
 app.use(cors());
