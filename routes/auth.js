@@ -6,12 +6,6 @@ const { signin, signup } = require("../controllers/auth");
 
 router.post("/signin", signin);
 
-router.post("/signup",
-    [
-        authJwt.checkDuplicateUsername,
-    ],
-    signup
-)
-
+router.post("/signup", [authJwt.checkDuplicateUsername,], signup)
 
 module.exports = router
