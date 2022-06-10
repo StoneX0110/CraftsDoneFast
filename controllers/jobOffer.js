@@ -1,6 +1,4 @@
 const jobOfferModel = require('../models/JobOffer');
-const {query} = require("express");
-
 exports.getMyJobOffers = ((req, res) => {
     console.log(req.userId);
     jobOfferModel.find({author: req.userId}).select(['-images']).then(function (jobs) {
