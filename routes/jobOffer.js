@@ -5,7 +5,7 @@ const verifyToken = authJwt.verifyToken;
 // Load Book model
 const jobOfferModel = require('../models/JobOffer');
 
-const { getJobOffers, getJobOffer, insertJobOffer} = require('../controllers/jobOffer.js');
+const { getMyJobOffers, getJobOffer, insertJobOffer,getRecentJobOffers} = require('../controllers/jobOffer.js');
 
 // @route GET api/books/test
 // @description tests books route
@@ -36,7 +36,9 @@ router.route('/insert').post([verifyToken], insertJobOffer
 // }
 );
 
-router.get('/myJobOffers', getJobOffers);
+router.route('/recentJobOffers').get(getRecentJobOffers);
+
+router.route('/myJobOffers').get([verifyToken], getMyJobOffers);
 //function (req, res){
     // jobOfferModel.find({}).then(function (jobs) {
     //     // console.log(jobs);

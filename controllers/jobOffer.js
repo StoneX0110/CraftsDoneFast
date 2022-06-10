@@ -1,11 +1,18 @@
 const jobOfferModel = require('../models/JobOffer');
+const {query} = require("express");
 
-exports.getJobOffers = ((req, res) => {
-    jobOfferModel.find({}).select(['-images']).then(function (jobs) {
+exports.getMyJobOffers = ((req, res) => {
+    console.log(req.userId);
+    jobOfferModel.find({author: req.userId}).select(['-images']).then(function (jobs) {
         res.send(jobs);
     })
 });
 
+exports.getRecentJobOffers = ((req, res) => {
+    jobOfferModel.find().select(['-images']).then(function (jobs) {
+        res.send(jobs);
+    })
+});
 exports.getJobOffer = ((req, res) => {
     //only populate the username of author. password ofc should not be exposed.
     jobOfferModel.find({_id: req.params.id}).populate('author', {username: 1}).then(function (job) {
