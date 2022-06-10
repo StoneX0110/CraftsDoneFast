@@ -9,7 +9,7 @@ exports.getMyJobOffers = ((req, res) => {
 });
 
 exports.getRecentJobOffers = ((req, res) => {
-    jobOfferModel.find().select(['-images']).then(function (jobs) {
+    jobOfferModel.find().select(['-images']).limit(10).then(function (jobs) {
         res.send(jobs);
     })
 });
