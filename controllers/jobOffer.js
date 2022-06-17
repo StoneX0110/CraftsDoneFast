@@ -23,7 +23,6 @@ exports.getJobOffer = ((req, res) => {
 
 
 exports.insertJobOffer = ((req, res) => {
-    const receivedJob = req.body;
     const jobOffer = req.body;
     jobOffer.author = req.userId;
     const transformedImage = [];
@@ -31,7 +30,6 @@ exports.insertJobOffer = ((req, res) => {
         transformedImage.push({data: new Buffer.from(element, 'base64'), contentType: "image/jpeg"});
       });
     jobOffer.images = transformedImage;
-    console.log(jobOffer);   
     jobOfferModel(jobOffer).save((error, job) => {
         if (error) {
             console.log(error)
@@ -39,5 +37,28 @@ exports.insertJobOffer = ((req, res) => {
         } else {
             res.send(job.id);
         }
+    })
+});
+
+exports.updateJobOffer = ((req, res) => {
+    const jobOffer = req.body;
+    jobOfferModel.findByIdAndUpdate(jobOffer._id, {$set: jobOffer}).then(function(job, err) {
+        if (err) {
+            console.log(error);
+            res.send(error);
+        } else {
+        res.send(job);
+        } 
+    })
+});
+
+exports.deleteJobOffer = ((req, res) => {
+    jobOfferModel.findByIdAndRemove(req.params.id).then(function(job, err) {
+        if (err) {
+            console.log(error);
+            res.send(error);
+        } else {
+            res.send("deleted");
+        } 
     })
 });
