@@ -21,6 +21,12 @@ exports.getJobOffer = ((req, res) => {
     })
 });
 
+// returns jobs matching attributes
+exports.getMatchingJobOffers = ((req, res) => {
+    jobOfferModel.find({category: JSON.parse(req.query.state).category}).sort({ 'insertionDate': -1 }).then(function (jobs) {
+        res.send(jobs);
+    })
+});
 
 exports.insertJobOffer = ((req, res) => {
     const jobOffer = req.body;
