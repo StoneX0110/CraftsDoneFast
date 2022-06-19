@@ -25,4 +25,4 @@ let userSchema = new Schema({
         collection: 'User'
     })
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = User = mongoose.model('User', userSchema)
