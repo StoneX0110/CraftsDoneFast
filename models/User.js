@@ -15,7 +15,7 @@ let userSchema = new Schema({
         postalCode: Number,
         shortDescription: String,
         description: String,
-        skills: [String]
+        skills: [{ value: String, label: String }]
     },
     profilePicture: {
         data: Buffer,
