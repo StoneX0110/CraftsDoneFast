@@ -9,7 +9,7 @@ exports.getMyJobOffers = ((req, res) => {
 
 // returns 10 most recent job offers
 exports.getRecentJobOffers = ((req, res) => {
-    jobOfferModel.find().select(['-images']).sort({ 'insertionDate': -1 }).limit(10).then(function (jobs) {
+    jobOfferModel.find().select(['-images']).sort({'insertionDate': -1}).limit(10).then(function (jobs) {
         res.send(jobs);
     })
 });
@@ -23,9 +23,19 @@ exports.getJobOffer = ((req, res) => {
 
 // returns jobs matching attributes
 exports.getMatchingJobOffers = ((req, res) => {
-    jobOfferModel.find({category: JSON.parse(req.query.state).category}).sort({ 'insertionDate': -1 }).then(function (jobs) {
-        res.send(jobs);
-    })
+    const query = JSON.parse(req.query.state);
+    query.category === "Any" ?
+        jobOfferModel.find({
+            postalCode: {$in: query.zips_in_range}
+        }).sort({'insertionDate': -1}).then(function (jobs) {
+            res.send(jobs);
+        }) :
+        jobOfferModel.find({
+            category: query.category,
+            postalCode: {$in: query.zips_in_range}
+        }).sort({'insertionDate': -1}).then(function (jobs) {
+            res.send(jobs);
+        })
 });
 
 exports.insertJobOffer = ((req, res) => {
@@ -34,7 +44,7 @@ exports.insertJobOffer = ((req, res) => {
     const transformedImage = [];
     jobOffer.images.forEach(element => {
         transformedImage.push({data: new Buffer.from(element, 'base64'), contentType: "image/jpeg"});
-      });
+    });
     jobOffer.images = transformedImage;
     jobOfferModel(jobOffer).save((error, job) => {
         if (error) {
@@ -48,23 +58,23 @@ exports.insertJobOffer = ((req, res) => {
 
 exports.updateJobOffer = ((req, res) => {
     const jobOffer = req.body;
-    jobOfferModel.findByIdAndUpdate(jobOffer._id, {$set: jobOffer}).then(function(job, err) {
+    jobOfferModel.findByIdAndUpdate(jobOffer._id, {$set: jobOffer}).then(function (job, err) {
         if (err) {
             console.log(error);
             res.send(error);
         } else {
-        res.send(job);
-        } 
+            res.send(job);
+        }
     })
 });
 
 exports.deleteJobOffer = ((req, res) => {
-    jobOfferModel.findByIdAndRemove(req.params.id).then(function(job, err) {
+    jobOfferModel.findByIdAndRemove(req.params.id).then(function (job, err) {
         if (err) {
             console.log(error);
             res.send(error);
         } else {
             res.send("deleted");
-        } 
+        }
     })
 });
