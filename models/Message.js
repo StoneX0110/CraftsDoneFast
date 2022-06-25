@@ -5,9 +5,19 @@ const MessageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    chat: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'chat'
+    },
+    isSystemMessage: {
+        type: Boolean,
+        default: false,
+    },
     createdAt: Date,
-    author: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    chat: {type: mongoose.Schema.Types.ObjectId, ref: 'chat'},
 });
 
 module.exports = Chat = mongoose.model('message', MessageSchema);
