@@ -26,6 +26,10 @@ exports.signup = (req, res) => {
             description: '',
         },
     };
+    if (user.username.includes(" ")) {
+        res.status(400).send({ message: "Failed! Spaces in usernames are not allowed!" });
+        return;
+    }
     userModel.create(user, err => {
         if (err) {
             res.status(500).send({message: "User could not be created: " + err});
