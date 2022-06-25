@@ -1,5 +1,4 @@
 const userModel = require('../models/User');
-const jobOfferModel = require("../models/JobOffer");
 
 // returns specific user matching an username
 exports.getUser = ((req, res) => {
@@ -12,7 +11,7 @@ exports.getUser = ((req, res) => {
 exports.updateUser = ((req, res) => {
     const user = req.body;
     //console.log(user);
-    userModel.findByIdAndUpdate(user.id, {$set: {"settings": user.state}}).then(function(us, err) {
+    userModel.findByIdAndUpdate(user.id, {$set: {"settings": user.state}}).then(function (us, err) {
         if (err) {
             console.log(err);
             res.send(err);
@@ -21,3 +20,35 @@ exports.updateUser = ((req, res) => {
         }
     })
 });
+
+// returns profiles matching attributes
+exports.getMatchingProfiles = ((req, res) => {
+    if (req.query.category === "Any") {
+        userModel.find().select(['-password']).then(function (jobs) {
+            res.send(jobs);
+        })
+    } else {
+        userModel.find({
+            "settings.skills.value": req.query.category,
+        }).select(['-password']).then(function (jobs) {
+            res.send(jobs);
+        })
+    }
+});
+
+exports.getMatchingProfilesInRange = ((req, res) => {
+    if (req.query.category === "Any") {
+        userModel.find({
+            "settings.postalCode": {$in: req.query.zips}
+        }).select(['-password']).then(function (jobs) {
+            res.send(jobs);
+        })
+    } else {
+        userModel.find({
+            "settings.skills.value": req.query.category,
+            "settings.postalCode": {$in: req.query.zips}
+        }).select(['-password']).then(function (jobs) {
+            res.send(jobs);
+        })
+    }
+})

@@ -23,19 +23,34 @@ exports.getJobOffer = ((req, res) => {
 
 // returns jobs matching attributes
 exports.getMatchingJobOffers = ((req, res) => {
-    const query = JSON.parse(req.query.state);
-    query.category === "Any" ?
-        jobOfferModel.find({
-            postalCode: {$in: query.zips_in_range}
-        }).sort({'insertionDate': -1}).then(function (jobs) {
-            res.send(jobs);
-        }) :
-        jobOfferModel.find({
-            category: query.category,
-            postalCode: {$in: query.zips_in_range}
-        }).sort({'insertionDate': -1}).then(function (jobs) {
-            res.send(jobs);
-        })
+        if (req.query.category === "Any") {
+            jobOfferModel.find().sort({'insertionDate': -1}).then(function (jobs) {
+                res.send(jobs);
+            })
+        } else {
+            jobOfferModel.find({
+                category: req.query.category,
+            }).sort({'insertionDate': -1}).then(function (jobs) {
+                res.send(jobs);
+            })
+        }
+});
+
+exports.getMatchingJobOffersInRange = ((req, res) => {
+        if (req.query.category === "Any") {
+            jobOfferModel.find({
+                postalCode: {$in: req.query.zips}
+            }).sort({'insertionDate': -1}).then(function (jobs) {
+                res.send(jobs);
+            })
+        } else {
+            jobOfferModel.find({
+                category: req.query.category,
+                postalCode: {$in: req.query.zips}
+            }).sort({'insertionDate': -1}).then(function (jobs) {
+                res.send(jobs);
+            })
+        }
 });
 
 exports.insertJobOffer = ((req, res) => {
