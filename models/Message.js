@@ -20,4 +20,4 @@ const MessageSchema = new mongoose.Schema({
     createdAt: Date,
 });
 
-module.exports = Chat = mongoose.model('message', MessageSchema);
+module.exports = Message = mongoose.model('message', MessageSchema);
