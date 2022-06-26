@@ -5,9 +5,7 @@ const ChatSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    jobOffer: {
-        id: String
-    },
+    jobOffer: {type: mongoose.Schema.Types.ObjectId, ref: 'jobOffer'},
     contract: {type: mongoose.Schema.Types.ObjectId, ref: 'contract'},
     messages: [{type: mongoose.Schema.Types.ObjectId, ref: 'message'}],
     users: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
