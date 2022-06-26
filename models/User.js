@@ -21,6 +21,7 @@ let userSchema = new Schema({
         data: Buffer,
         contentType: String
     },
+    chats: [{type: mongoose.Schema.Types.ObjectId, ref: 'Chat'}]
 },
     {
         collection: 'User'

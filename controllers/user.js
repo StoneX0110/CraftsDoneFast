@@ -11,7 +11,21 @@ exports.getUser = ((req, res) => {
 exports.updateUser = ((req, res) => {
     const user = req.body;
     //console.log(user);
-    userModel.findByIdAndUpdate(user.id, {$set: {"settings": user.state}}).then(function (us, err) {
+    userModel.findByIdAndUpdate(req.userId, {$set: {"settings": user.state}}).then(function (us, err) {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            res.send(us);
+        }
+    })
+});
+
+//update user chats (separate function without verifying)
+exports.updateUserChats = ((req, res) => {
+    const user = req.body;
+    //console.log(user);
+    userModel.findByIdAndUpdate(user.id, {$set: {"chats": user.chats}}).then(function (us, err) {
         if (err) {
             console.log(err);
             res.send(err);
