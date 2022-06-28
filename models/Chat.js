@@ -8,7 +8,10 @@ const ChatSchema = new mongoose.Schema({
     jobOffer: {type: mongoose.Schema.Types.ObjectId, ref: 'jobOffer'},
     contract: {type: mongoose.Schema.Types.ObjectId, ref: 'contract'},
     messages: [{type: mongoose.Schema.Types.ObjectId, ref: 'message'}],
-    users: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    users: {
+        craftsman: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+        client: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+    }
 });
 
 module.exports = Chat = mongoose.model('chat', ChatSchema);
