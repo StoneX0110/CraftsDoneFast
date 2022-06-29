@@ -1,5 +1,6 @@
 const chatModel = require('../models/Chat');
 const userModel = require("../models/User");
+const messageModel = require("../models/Message");
 
 exports.createChat = ((req, res) => {
         const chat = req.body;
@@ -38,16 +39,34 @@ exports.getMyChats = ((req, res) => {
             return chatObjectId.valueOf()
         });
 
-        let chatsWithoutMessages = [];
+        let chatsWithMessages = [];
         //counter to only send when both chats are received
         let chatCounter = 0;
         //add each chat without messages to result
         chatIds.forEach(chatId => {
-            chatModel.findById(chatId).select(['-messages']).then(function (resultChat, err) {
+            chatModel.findById(chatId).then(async function (resultChat, err) {
                 if (err) {
                     console.log(err);
                     res.send(err);
                 } else {
+                    //add messages to chat
+                    let messages = [];
+                    let msgCounter = 0;
+                    for (const msgId of resultChat.messages) {
+                        let messageId = msgId.valueOf();
+                        await messageModel.findById(messageId).select(['-chat']).then(function (message, err) {
+                            if (err) {
+                                console.log(err);
+                                res.send(err);
+                            } else {
+                                messages.push(message);
+                                msgCounter++;
+                                if (msgCounter === resultChat.messages.length) {
+                                    resultChat.messages = messages;
+                                }
+                            }
+                        })
+                    }
                     //add partner username to result
                     let partnerId = '';
                     let partnerUsername = '';
@@ -59,10 +78,10 @@ exports.getMyChats = ((req, res) => {
                     }
                     userModel.findById(partnerId).select(['username']).then(function (username) {
                         partnerUsername = username.username;
-                        chatsWithoutMessages.push({chat: resultChat, partnerUsername: partnerUsername});
+                        chatsWithMessages.push({chat: resultChat, partnerUsername: partnerUsername});
                         chatCounter++;
                         //if all chats are included, send result
-                        if (chatCounter === chatIds.length) res.send(chatsWithoutMessages);
+                        if (chatCounter === chatIds.length) res.send(chatsWithMessages);
                     })
 
                 }
@@ -70,3 +89,51 @@ exports.getMyChats = ((req, res) => {
         })
     })
 });
+
+exports.postMessageToChat = ((req, res) => {
+    let message = req.body;
+    messageModel(message).save((err, createdMessage) => {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            chatModel.findByIdAndUpdate(createdMessage.chat, {$push: {"messages": createdMessage._id.valueOf()}}).then(function (us, err) {
+                if (err) {
+                    console.log(err);
+                    res.send(err);
+                }
+            })
+        }
+    })
+});
+
+/*
+kept here for potential changes in the future
+
+exports.getMessagesFromChatId = ((req, res) => {
+    chatModel.findById(req.params.chatId).select(['messages']).then(async function (messageIds, err) {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            let messages = [];
+            let msgCounter = 0;
+            for (const msgId of messageIds.messages) {
+                let messageId = msgId.valueOf();
+                await messageModel.findById(messageId).select(['-chat']).then(function (message, err) {
+                    if (err) {
+                        console.log(err);
+                        res.send(err);
+                    } else {
+                        messages.push(message);
+                        msgCounter++;
+                        if (msgCounter === messageIds.messages.length) {
+                            res.send(messages);
+                        }
+                    }
+                })
+            }
+        }
+    })
+});
+ */
