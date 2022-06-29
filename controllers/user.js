@@ -65,4 +65,11 @@ exports.getMatchingProfilesInRange = ((req, res) => {
             res.send(jobs);
         })
     }
-})
+});
+
+exports.confirmPayment = ((req, res) => {
+    const paymentMethod = req.body;
+    //TODO Update
+    console.log(paymentMethod);
+    res.send(paymentMethod);
+});
