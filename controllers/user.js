@@ -106,3 +106,10 @@ exports.getMatchingProfilesInRange = ((req, res) => {
         })
     }
 });
+
+exports.confirmPayment = ((req, res) => {
+    const paymentMethod = req.body;
+    //TODO Update
+    console.log(paymentMethod);
+    res.send(paymentMethod);
+});
