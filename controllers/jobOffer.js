@@ -73,6 +73,7 @@ exports.insertJobOffer = ((req, res) => {
 
 exports.updateJobOffer = ((req, res) => {
     const jobOffer = req.body;
+    delete jobOffer.popup;
     jobOfferModel.findByIdAndUpdate(jobOffer._id, {$set: jobOffer}).then(function (job, err) {
         if (err) {
             console.log(error);
