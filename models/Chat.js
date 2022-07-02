@@ -5,12 +5,27 @@ const ChatSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    jobOffer: {type: mongoose.Schema.Types.ObjectId, ref: 'jobOffer'},
-    contract: {type: mongoose.Schema.Types.ObjectId, ref: 'contract'},
-    messages: [{type: mongoose.Schema.Types.ObjectId, ref: 'message'}],
+    jobOffer: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'jobOffer'
+    },
+    contract: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'contract'
+    },
+    messages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'message'
+    }],
     users: {
-        craftsman: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-        client: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
+        craftsman: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        },
+        client: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+        }
     }
 });
 
