@@ -9,25 +9,28 @@ exports.createChat = ((req, res) => {
         price: '',
         startingDate: '',
         paymentStatus: 'noPayment',
+        chat: null
     }
-
+    //get craftsman ID
     userModel.find({username: chat.users.craftsman}).select(['_id']).then(function (usId, err) {
         let newCraftsman = usId[0]._id.valueOf();
-
+        //get client ID
         userModel.find({username: chat.users.client}).select(['_id']).then(function (usId2, err) {
             chat.users = {craftsman: newCraftsman, client: usId2[0]._id.valueOf()};
-
+            //save contract (still without chat ID)
             contractModel(contract).save((err, createdContract) => {
                 if (err) {
                     console.log(err);
                     res.send(err);
                 } else {
+                    //create chat including contract ID
                     chat.contract = createdContract._id.valueOf();
                     chatModel(chat).save((error, createdChat) => {
                         if (error) {
                             console.log(error)
                             res.send(error)
                         } else {
+                            //update users to include chat ID
                             Object.keys(chat.users).forEach(key => {
                                 userModel.findByIdAndUpdate(chat.users[key], {$push: {"chats": createdChat.id}}).then(function (us, err) {
                                     if (err) {
@@ -36,6 +39,16 @@ exports.createChat = ((req, res) => {
                                     }
                                 })
                             })
+                            //update contract to include chat ID
+                            contractModel.findByIdAndUpdate(createdContract._id.valueOf(), {$set: {'chat': createdChat}}).then(function (updatedContract, err) {
+                                if (error) {
+                                    console.log(err)
+                                    res.send(err)
+                                } else {
+                                    console.log(updatedContract);
+                                }
+                            });
+                            //send ID of created chat
                             res.send(createdChat.id);
                         }
                     })
@@ -56,7 +69,7 @@ exports.createChat = ((req, res) => {
             let chatsWithMessages = [];
             //counter to only send when both chats are received
             let chatCounter = 0;
-            //add each chat without messages to result
+            //add each chat to result
             chatIds.forEach(chatId => {
                 chatModel.findById(chatId).then(async function (resultChat, err) {
                     if (err) {
@@ -128,7 +141,7 @@ exports.createChat = ((req, res) => {
      */
     exports.createContract = ((req, res) => {
         const contract = req.body;
-        const chatID = req.body.chatID;
+        const chatID = req.body.chat;
 
         contractModel(contract).save((err, createdContract) => {
             if (err) {
@@ -147,12 +160,12 @@ exports.createChat = ((req, res) => {
 
     exports.updateContract = ((req, res) => {
         const contract = req.body;
-        contractModel.findByIdAndUpdate(contract._id, {$set: contract}).then(function (job, err) {
+        contractModel.findByIdAndUpdate(contract._id, {$set: contract}).then(function (updatedContract, err) {
             if (err) {
-                console.log(error);
-                res.send(error);
+                console.log(err);
+                res.send(err);
             } else {
-                res.send(job);
+                res.send(updatedContract);
             }
         })
     });
@@ -187,13 +200,24 @@ exports.createChat = ((req, res) => {
     });
 
     exports.getContract = ((req, res) => {
-        chatModel.find({_id: req.params.id}).populate('contract', {contractID: req.params.id}).then(function (job) {
+        contractModel.find({_id: req.params.id}).populate('contract', {contractID: req.params.id}).then(function (job) {
             res.send(job[0]);
         })
     });
 
+    exports.getContractsFromIdArray = (async (req, res) => {
+        let contractsArray = [];
+        //console.log(req.body);
+        for (const contractId of req.query.idArray) {
+            await contractModel.findById(contractId).then((contr, err) => {
+                contractsArray.push(contr);
+            })
+        }
+        res.send(contractsArray);
+    });
+
     exports.deleteContract = ((req, res) => {
-        chatModel.findByIdAndRemove(req.params.id).then(function (job, err) {
+        contractModel.findByIdAndRemove(req.params.id).then(function (job, err) {
             if (err) {
                 console.log(error);
                 res.send(error);
