@@ -14,7 +14,12 @@ exports.updateUser = ((req, res) => {
     const profilePicture = req.body.profilePicture;
     const transformedProfilePicture = {data: new Buffer.from(profilePicture, 'base64'), contentType: "image/jpeg"};
     console.log(transformedProfilePicture);
-    userModel.findByIdAndUpdate(req.userId, {$set: {"settings": user.state, "profilePicture": transformedProfilePicture}}).then(function (us, err) {
+    userModel.findByIdAndUpdate(req.userId, {
+        $set: {
+            "settings": user.state,
+            "profilePicture": transformedProfilePicture
+        }
+    }).then(function (us, err) {
         if (err) {
             console.log(err);
             res.send(err);
@@ -38,42 +43,63 @@ exports.updateUserChats = ((req, res) => {
     })
 });
 
+/*
+Syntax (example):
+var body = {
+    rating: {
+        date: Date.now(),
+        stars: 5,
+        description: "Test Rating 5"
+    },
+    id: '62a06b10e879f77b93d63df5',
+}
+axios.post("api/user/insertRating", body).then()
+ */
 exports.insertRating = ((req, res) => {
-    const user = req.body; // TODO use correct req-attributes to get user (req.query.x?)
-    userModel.findByIdAndUpdate(user.id, [
-        {
-            $push: {
-                ratings: { // TODO use correct req-attributes to get rating details
-                    stars: req.params.stars,
-                    description: req.params.description,
-                    date: req.params.date,
-                }
-            }
-        }, {
+    var average;
+    userModel.findById(req.body.id).then(async function (us, err) {
+        var sum = req.body.rating.stars;
+        for (let i = 0; i < us.ratings.length; i++) {
+            sum += us.ratings[i].stars;
+        }
+        average = sum / (us.ratings.length + 1);
+
+        await userModel.findByIdAndUpdate(req.body.id, {
             $set: {
-                averageRating: {$avg: "$ratings.stars"}
-                // TODO if not working: put arguments in Strings? -> "$avg", etc. OR put set-block in own .find...Update call
+                averageRating: average
+            },
+            $push: {
+                ratings: req.body.rating
             }
-        }
-    ]).then(function (us, err) {
-        if (err) {
-            console.log(err);
-            res.send(err);
-        } else {
-            res.send(us);
-        }
+        }).then(function (us, err) {
+            if (err) {
+                console.log(err);
+                res.send(err);
+            } else {
+                res.send(us);
+            }
+        });
     })
 });
 
 exports.getAverageRating = ((req, res) => {
-    userModel.findById(req.query.author).select(['averageRating']).then(function (rating) {
+    userModel.findById(req.query.id).select(['averageRating']).then(function (rating) {
         res.send(rating);
     })
 });
 
+/*
+Syntax (example):
+axios.get("api/user/getRatings", {
+    params: {
+        id: "62b6fd6da4c0b2901037c34c"
+    }
+}).then((res) => {
+    console.log(res.data.ratings)
+})
+ */
 exports.getRatings = ((req, res) => {
-    const user = req.body; // TODO call correct attributes (req.query.x?)
-    userModel.findById(user.id).select(['ratings']).then(function (ratings) {
+    userModel.findById(req.query.id).select(['ratings']).then(function (ratings) {
         res.send(ratings);
     })
 });
