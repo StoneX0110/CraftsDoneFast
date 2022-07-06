@@ -23,7 +23,7 @@ router.route('/postMessageToChat').post([verifyToken], postMessageToChat);
 
 router.route('/createContract').post([verifyToken], createContract)
 
-router.route('/getMatchingContract').get([verifyToken], getContract)
+router.route('/getContract').get([verifyToken], getContract)
 
 router.route('/updateContract').post([verifyToken], updateContract)
 

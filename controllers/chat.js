@@ -200,8 +200,13 @@ exports.createChat = ((req, res) => {
     });
 
     exports.getContract = ((req, res) => {
-        contractModel.find({_id: req.params.id}).populate('contract', {contractID: req.params.id}).then(function (job) {
-            res.send(job[0]);
+        contractModel.findById(req.query.contractId).then(function (contr, err) {
+            if (err) {
+                console.log(err);
+                res.send(err);
+            } else {
+                res.send(contr);
+            }
         })
     });
 
