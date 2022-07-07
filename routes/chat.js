@@ -11,13 +11,16 @@ const {
     updateContract,
     updateContractDetails,
     updateContractStatus,
-    getContractsFromIdArray
+    getContractsFromIdArray,
+    deleteChat
 } = require("../controllers/chat");
 const verifyToken = authJwt.verifyToken;
 
 router.route('/create').post([verifyToken], createChat);
 
 router.route('/getMyChats').get([verifyToken], getMyChats);
+
+router.route('/delete/:id').delete([verifyToken], deleteChat)
 
 router.route('/postMessageToChat').post([verifyToken], postMessageToChat);
 
