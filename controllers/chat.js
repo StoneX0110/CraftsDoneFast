@@ -147,12 +147,18 @@ exports.deleteChat = ((req, res) => {
             console.log(err);
             res.send(err);
         } else {
+            let counter = 0;
             //delete chat ids from users
             ['client', 'craftsman'].forEach(clientOrCraftsman => {
                 userModel.findByIdAndUpdate(deletedChat.users[clientOrCraftsman], {$pull: {"chats": deletedChat._id}}).then((updatedUser, err) => {
                     if (err) {
                         console.log(err);
                         res.send(err);
+                    } else {
+                        counter++;
+                        if (counter === 2) {
+                            res.send(deletedChat);
+                        }
                     }
                 })
             })
@@ -170,8 +176,6 @@ exports.deleteChat = ((req, res) => {
                     res.send(err);
                 } else console.log('deleted count: ' + deleted.deletedCount);
             });
-
-            res.send(deletedChat);
         }
     })
 })
