@@ -208,35 +208,6 @@ exports.updateContract = ((req, res) => {
     })
 });
 
-exports.updateContractDetails = ((req, res) => {
-    const contract = req.body;
-    contractModel.findByIdAndUpdate(contract._id, {
-        $set: {
-            "price": contract.price,
-            "startingDate": contract.startingDate
-        }
-    }).then(function (job, err) {
-        if (err) {
-            console.log(error);
-            res.send(error);
-        } else {
-            res.send(job);
-        }
-    })
-});
-
-exports.updateContractStatus = ((req, res) => {
-    const contract = req.body;
-    contractModel.findByIdAndUpdate(contract._id, {$set: {"paymentStatus": contract.paymentStatus}}).then(function (job, err) {
-        if (err) {
-            console.log(error);
-            res.send(error);
-        } else {
-            res.send(job);
-        }
-    })
-});
-
 exports.getContract = ((req, res) => {
     contractModel.findById(req.query.contractId).then(function (contr, err) {
         if (err) {

@@ -28,11 +28,7 @@ router.route('/createContract').post([verifyToken], createContract)
 
 router.route('/getContract').get([verifyToken], getContract)
 
-router.route('/updateContract').post([verifyToken], updateContract)
-
-router.route('/updateContractStatus').post([verifyToken], updateContractStatus)
-
-router.route('/updateContractDetails').post([verifyToken], updateContractDetails)
+router.route('/updateContract').put([verifyToken], updateContract)
 
 router.route('/delete/:id').delete([verifyToken], deleteContract)
 
