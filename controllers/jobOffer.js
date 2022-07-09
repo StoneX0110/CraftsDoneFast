@@ -1,5 +1,5 @@
 const jobOfferModel = require('../models/JobOffer');
-const userModel = require('../models/User');
+const chatModel = require('../models/Chat');
 
 
 // returns all job offers of a specific user
@@ -8,6 +8,28 @@ exports.getMyJobOffers = ((req, res) => {
         res.send(jobs);
     })
 });
+
+// returns all job offers from chats of user where they are the craftsman
+exports.getMyJobOfferRequests = ((req, res) => {
+    chatModel.find({"users.craftsman": req.userId, "jobOffer": {$exists: true}}).select('jobOffer').then(function (jobOfferIdObjs, err) {
+        //returns e.g., [{_id: new ObjectId("i87gio45go8t"), jobOffer: new ObjectId("i37h4zs555dgf3rtw")}]
+        if (err) {
+            console.log(err)
+            res.send(err)
+        } else {
+            //get job offers for each gathered id
+            let jobOffersTemp = [];
+            let offerCount = 0;
+            jobOfferIdObjs.forEach(jobOfferIdObj => {
+                jobOfferModel.findById(jobOfferIdObj['jobOffer']).select(['-images']).then(function (offer) {
+                    jobOffersTemp.push(offer);
+                    offerCount++;
+                    if (offerCount === jobOfferIdObjs.length) res.send(jobOffersTemp);
+                })
+            })
+        }
+    })
+})
 
 // returns 10 most recent job offers
 exports.getRecentJobOffers = ((req, res) => {
