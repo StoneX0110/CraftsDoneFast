@@ -1,6 +1,6 @@
 const userModel = require('../models/User');
 
-// returns specific user matching an username
+// returns specific user matching a username
 exports.getUser = ((req, res) => {
     userModel.find({username: req.params.username}).select(['-password']).then(function (user) {
         res.send(user[0]);
@@ -53,23 +53,49 @@ var body = {
     },
     id: '62a06b10e879f77b93d63df5',
 }
-axios.post("api/user/insertRating", body).then()
+axios.post("api/user/insertCustomerRating", body).then()
  */
-exports.insertRating = ((req, res) => {
+exports.insertCustomerRating = ((req, res) => {
     var average;
     userModel.findById(req.body.id).then(async function (us, err) {
         var sum = req.body.rating.stars;
-        for (let i = 0; i < us.ratings.length; i++) {
-            sum += us.ratings[i].stars;
+        for (let i = 0; i < us.customerRatings.length; i++) {
+            sum += us.customerRatings[i].stars;
         }
-        average = sum / (us.ratings.length + 1);
+        average = sum / (us.customerRatings.length + 1);
 
         await userModel.findByIdAndUpdate(req.body.id, {
             $set: {
-                averageRating: average
+                averageCustomerRating: average
             },
             $push: {
-                ratings: req.body.rating
+                customerRatings: req.body.rating
+            }
+        }).then(function (us, err) {
+            if (err) {
+                console.log(err);
+                res.send(err);
+            } else {
+                res.send(us);
+            }
+        });
+    })
+});
+exports.insertCraftsmanRating = ((req, res) => {
+    var average;
+    userModel.findById(req.body.id).then(async function (us, err) {
+        var sum = req.body.rating.stars;
+        for (let i = 0; i < us.craftsmanRatings.length; i++) {
+            sum += us.craftsmanRatings[i].stars;
+        }
+        average = sum / (us.craftsmanRatings.length + 1);
+
+        await userModel.findByIdAndUpdate(req.body.id, {
+            $set: {
+                averageCraftsmanRating: average
+            },
+            $push: {
+                craftsmanRatings: req.body.rating
             }
         }).then(function (us, err) {
             if (err) {
@@ -82,15 +108,20 @@ exports.insertRating = ((req, res) => {
     })
 });
 
-exports.getAverageRating = ((req, res) => {
-    userModel.findById(req.query.id).select(['averageRating']).then(function (rating) {
+exports.getAverageCustomerRating = ((req, res) => {
+    userModel.findById(req.query.id).select(['averageCustomerRating']).then(function (rating) {
+        res.send(rating);
+    })
+});
+exports.getAverageCraftsmanRating = ((req, res) => {
+    userModel.findById(req.query.id).select(['averageCraftsmanRating']).then(function (rating) {
         res.send(rating);
     })
 });
 
 /*
 Syntax (example):
-axios.get("api/user/getRatings", {
+axios.get("api/user/getCustomerRatings", {
     params: {
         id: "62b6fd6da4c0b2901037c34c"
     }
@@ -98,8 +129,13 @@ axios.get("api/user/getRatings", {
     console.log(res.data.ratings)
 })
  */
-exports.getRatings = ((req, res) => {
-    userModel.findById(req.query.id).select(['ratings']).then(function (ratings) {
+exports.getCustomerRatings = ((req, res) => {
+    userModel.findById(req.query.id).select(['customerRatings']).then(function (ratings) {
+        res.send(ratings);
+    })
+});
+exports.getCraftsmanRatings = ((req, res) => {
+    userModel.findById(req.query.id).select(['craftsmanRatings']).then(function (ratings) {
         res.send(ratings);
     })
 });

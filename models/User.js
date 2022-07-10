@@ -8,8 +8,15 @@ let userSchema = new Schema({
         },
         password: String,
         profileBoost: Boolean,
-        averageRating: Number,
-        ratings: [
+        averageCustomerRating: Number,
+        averageCraftsmanRating: Number,
+        customerRatings: [
+            {
+                stars: Number,
+                description: String,
+                date: Date,
+            }],
+        craftsmanRatings: [
             {
                 stars: Number,
                 description: String,
