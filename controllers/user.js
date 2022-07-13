@@ -58,12 +58,13 @@ axios.post("api/user/insertCustomerRating", body).then()
 exports.insertCustomerRating = ((req, res) => {
     var average;
     userModel.findById(req.body.id).then(async function (us, err) {
-        var sum = req.body.rating.stars;
+        console.log("us:")
+        console.log(us)
+        var sum = Number(req.body.rating.stars);
         for (let i = 0; i < us.customerRatings.length; i++) {
-            sum += us.customerRatings[i].stars;
+            sum += Number(us.customerRatings[i].stars);
         }
-        average = sum / (us.customerRatings.length + 1);
-
+        average = (sum / (us.customerRatings.length + 1));
         await userModel.findByIdAndUpdate(req.body.id, {
             $set: {
                 averageCustomerRating: average
@@ -84,9 +85,9 @@ exports.insertCustomerRating = ((req, res) => {
 exports.insertCraftsmanRating = ((req, res) => {
     var average;
     userModel.findById(req.body.id).then(async function (us, err) {
-        var sum = req.body.rating.stars;
+        var sum = Number(req.body.rating.stars);
         for (let i = 0; i < us.craftsmanRatings.length; i++) {
-            sum += us.craftsmanRatings[i].stars;
+            sum += Number(us.craftsmanRatings[i].stars);
         }
         average = sum / (us.craftsmanRatings.length + 1);
 
