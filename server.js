@@ -62,6 +62,10 @@ io.on("connection", (socket) => {
     socket.on('sendMessage', (message) => {
         socket.to(message.chat).emit("receiveMessage", message);
     })
+    //force disconnect
+    socket.on('forceDisconnect', () => {
+        socket.disconnect(true);
+    });
 });
 
 httpServer.listen(3002);
