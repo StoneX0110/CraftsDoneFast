@@ -98,15 +98,17 @@ exports.getMyChats = ((req, res) => {
                     //add partner username to result
                     let partnerId = '';
                     let partnerUsername = '';
+                    let profilePicture = '';
                     //set partner id to id of chat participant that isn't us
                     if (req.userId.toString() === resultChat.users.craftsman.toString()) {
                         partnerId = resultChat.users.client;
                     } else {
                         partnerId = resultChat.users.craftsman;
                     }
-                    userModel.findById(partnerId).select(['username']).then(function (username) {
-                        partnerUsername = username.username;
-                        chatsWithMessages.push({chat: resultChat, partnerUsername: partnerUsername});
+                    userModel.findById(partnerId).select(['username', 'profilePicture']).then(function (result) {
+                        profilePicture = result.profilePicture;
+                        partnerUsername = result.username;
+                        chatsWithMessages.push({chat: resultChat, partnerUsername: partnerUsername, profilePicture: profilePicture});
                         chatCounter++;
                         //if all chats are included, send result
                         if (chatCounter === chatIds.length) res.send(chatsWithMessages);
