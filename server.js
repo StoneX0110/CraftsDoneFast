@@ -66,6 +66,10 @@ io.on("connection", (socket) => {
     socket.on('forceDisconnect', () => {
         socket.disconnect(true);
     });
+    //update contract
+    socket.on('updateContract', (updatedContract) => {
+        socket.to(updatedContract.chat).emit("updateContract", updatedContract);
+    })
 });
 
 httpServer.listen(3002);
