@@ -127,11 +127,11 @@ exports.postMessageToChat = ((req, res) => {
             console.log(err);
             res.send(err);
         } else {
-            chatModel.findByIdAndUpdate(createdMessage.chat, {$push: {"messages": createdMessage._id.valueOf()}}).then(function (us, err) {
+            chatModel.findByIdAndUpdate(createdMessage.chat, {$push: {"messages": createdMessage._id.valueOf()}}).then(function (updatedChat, err) {
                 if (err) {
                     console.log(err);
                     res.send(err);
-                }
+                } else res.send('success');
             })
         }
     })
