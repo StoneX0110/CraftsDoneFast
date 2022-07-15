@@ -13,9 +13,9 @@ const MessageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'chat'
     },
-    type: {
-        type: String,
-        required: true
+    isSystemMessage: {
+        type: Boolean,
+        default: false,
     },
     createdAt: Date,
 });
