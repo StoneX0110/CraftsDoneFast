@@ -67,7 +67,7 @@ exports.insertCustomerRating = ((req, res) => {
         average = (sum / (us.customerRatings.length + 1));
         await userModel.findByIdAndUpdate(req.body.id, {
             $set: {
-                averageCustomerRating: average
+                averageCustomerRating: parseFloat(average).toFixed(2)
             },
             $push: {
                 customerRatings: req.body.rating
@@ -93,7 +93,7 @@ exports.insertCraftsmanRating = ((req, res) => {
 
         await userModel.findByIdAndUpdate(req.body.id, {
             $set: {
-                averageCraftsmanRating: average
+                averageCraftsmanRating: parseFloat(average).toFixed(2)
             },
             $push: {
                 craftsmanRatings: req.body.rating
