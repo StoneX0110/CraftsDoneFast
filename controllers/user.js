@@ -144,7 +144,9 @@ exports.getCraftsmanRatings = ((req, res) => {
 // returns profiles matching attributes
 exports.getMatchingProfiles = ((req, res) => {
     if (req.query.category === "Any") {
-        userModel.find().select(['-password']).then(function (jobs) {
+        userModel.find({
+            "settings.skills": {$elemMatch:{}}
+        }).select(['-password']).then(function (jobs) {
             res.send(jobs);
         })
     } else {
@@ -159,6 +161,7 @@ exports.getMatchingProfiles = ((req, res) => {
 exports.getMatchingProfilesInRange = ((req, res) => {
     if (req.query.category === "Any") {
         userModel.find({
+            "settings.skills": {$elemMatch:{}},
             "settings.postalCode": {$in: req.query.zips}
         }).select(['-password']).then(function (jobs) {
             res.send(jobs);
