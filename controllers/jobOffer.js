@@ -33,7 +33,7 @@ exports.getMyJobOfferRequests = ((req, res) => {
 
 // returns 10 most recent job offers
 exports.getRecentJobOffers = ((req, res) => {
-    jobOfferModel.find().select(['-images']).sort({ 'insertionDate': -1 }).limit(10).then(function (jobs) {
+    jobOfferModel.find().sort({ 'insertionDate': -1 }).limit(10).then(function (jobs) {
         res.send(jobs);
     })
 });
