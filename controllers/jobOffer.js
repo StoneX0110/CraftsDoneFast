@@ -4,7 +4,7 @@ const chatModel = require('../models/Chat');
 
 // returns all job offers of a specific user
 exports.getMyJobOffers = ((req, res) => {
-    jobOfferModel.find({ author: req.userId }).select(['-images']).then(function (jobs) {
+    jobOfferModel.find({ author: req.userId }).then(function (jobs) {
         res.send(jobs);
     })
 });
@@ -21,7 +21,7 @@ exports.getMyJobOfferRequests = ((req, res) => {
             let jobOffersTemp = [];
             let offerCount = 0;
             jobOfferIdObjs.forEach(jobOfferIdObj => {
-                jobOfferModel.findById(jobOfferIdObj['jobOffer']).select(['-images']).then(function (offer) {
+                jobOfferModel.findById(jobOfferIdObj['jobOffer']).then(function (offer) {
                     jobOffersTemp.push(offer);
                     offerCount++;
                     if (offerCount === jobOfferIdObjs.length) res.send(jobOffersTemp);
