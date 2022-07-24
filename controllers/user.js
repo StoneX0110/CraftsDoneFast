@@ -10,10 +10,8 @@ exports.getUser = ((req, res) => {
 //update user
 exports.updateUser = ((req, res) => {
     const user = req.body;
-    //console.log(user);
     const profilePicture = req.body.profilePicture;
     const transformedProfilePicture = {data: new Buffer.from(profilePicture, 'base64'), contentType: "image/jpeg"};
-    console.log(transformedProfilePicture);
     userModel.findByIdAndUpdate(req.userId, {
         $set: {
             "settings": user.state,
@@ -32,7 +30,6 @@ exports.updateUser = ((req, res) => {
 //update user chats (separate function without verifying)
 exports.updateUserChats = ((req, res) => {
     const user = req.body;
-    //console.log(user);
     userModel.findByIdAndUpdate(user.id, {$set: {"chats": user.chats}}).then(function (us, err) {
         if (err) {
             console.log(err);
@@ -58,8 +55,6 @@ axios.post("api/user/insertCustomerRating", body).then()
 exports.insertCustomerRating = ((req, res) => {
     var average;
     userModel.findById(req.body.id).then(async function (us, err) {
-        console.log("us:")
-        console.log(us)
         var sum = Number(req.body.rating.stars);
         for (let i = 0; i < us.customerRatings.length; i++) {
             sum += Number(us.customerRatings[i].stars);
@@ -178,7 +173,5 @@ exports.getMatchingProfilesInRange = ((req, res) => {
 
 exports.confirmPayment = ((req, res) => {
     const paymentMethod = req.body;
-    //TODO Update
-    console.log(paymentMethod);
     res.send(paymentMethod);
 });

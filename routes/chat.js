@@ -9,8 +9,6 @@ const {
     getContract,
     deleteContract,
     updateContract,
-    updateContractDetails,
-    updateContractStatus,
     getContractsFromIdArray,
     deleteChat
 } = require("../controllers/chat");

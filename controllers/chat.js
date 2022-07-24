@@ -44,8 +44,6 @@ exports.createChat = ((req, res) => {
                                 if (error) {
                                     console.log(err)
                                     res.send(err)
-                                } else {
-                                    console.log(updatedContract);
                                 }
                             });
                             //send ID of created chat
@@ -138,14 +136,10 @@ exports.postMessageToChat = ((req, res) => {
 });
 
 exports.deleteChat = ((req, res) => {
-    //TODO: maybe body, params, etc.
     let chatIdToDelete = req.params.id;
-    console.log('chatIdToDelete');
-    console.log(chatIdToDelete)
     //delete chat
     chatModel.findByIdAndDelete(chatIdToDelete).then((deletedChat, err) => {
         if (err) {
-            console.log('err in chat deletion');
             console.log(err);
             res.send(err);
         } else {
@@ -176,7 +170,7 @@ exports.deleteChat = ((req, res) => {
                 if (err) {
                     console.log(err);
                     res.send(err);
-                } else console.log('deleted count: ' + deleted.deletedCount);
+                }
             });
         }
     })
@@ -227,7 +221,6 @@ exports.getContract = ((req, res) => {
 
 exports.getContractsFromIdArray = (async (req, res) => {
     let contractsArray = [];
-    //console.log(req.body);
     for (const contractId of req.query.idArray) {
         await contractModel.findById(contractId).then((contr, err) => {
             contractsArray.push(contr);
@@ -246,33 +239,3 @@ exports.deleteContract = ((req, res) => {
         }
     })
 });
-/*
-kept here for potential changes in the future
-
-exports.getMessagesFromChatId = ((req, res) => {
-    chatModel.findById(req.params.chatId).select(['messages']).then(async function (messageIds, err) {
-        if (err) {
-            console.log(err);
-            res.send(err);
-        } else {
-            let messages = [];
-            let msgCounter = 0;
-            for (const msgId of messageIds.messages) {
-                let messageId = msgId.valueOf();
-                await messageModel.findById(messageId).select(['-chat']).then(function (message, err) {
-                    if (err) {
-                        console.log(err);
-                        res.send(err);
-                    } else {
-                        messages.push(message);
-                        msgCounter++;
-                        if (msgCounter === messageIds.messages.length) {
-                            res.send(messages);
-                        }
-                    }
-                })
-            }
-        }
-    })
-});
- */
