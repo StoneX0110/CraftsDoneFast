@@ -4,7 +4,7 @@ Repository will be used for our backend.
 
 ## Guarantee that MongoDB Community Server, Node.js and npm is installed
 
-## Start MongoDB
+## Setup MongoDB
 
 ```
 mongo
@@ -28,7 +28,9 @@ npm install //--force could be required, if a package is outdated
 
 # Starting
 
-Start MongoDB
+Start MongoDB, if not yet started.
+
+Depending on your installation, you can start the database with e.g.
 ```
 mongo
 ```
