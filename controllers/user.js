@@ -175,3 +175,19 @@ exports.confirmPayment = ((req, res) => {
     const paymentMethod = req.body;
     res.send(paymentMethod);
 });
+
+exports.payProfile = ((req, res) => {
+    const paymentMethod = req.body;
+    userModel.findByIdAndUpdate(req.userId, {
+        $set: {
+            "profileBoost": true,
+        }
+    }).then(function (us, err) {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            res.send("Payment was accepted. Profile Boost activated.");
+        }
+    })
+});

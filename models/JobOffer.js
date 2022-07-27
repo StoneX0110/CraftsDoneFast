@@ -30,6 +30,10 @@ const JobOfferSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    boost: {
+        type: Boolean,
+        default: false,
+    },
     images: [
         {
             data: Buffer,

@@ -1,5 +1,6 @@
 const jobOfferModel = require('../models/JobOffer');
 const chatModel = require('../models/Chat');
+const userModel = require('../models/User');
 
 
 // returns all job offers of a specific user
@@ -33,8 +34,9 @@ exports.getMyJobOfferRequests = ((req, res) => {
 
 // returns 10 most recent job offers
 exports.getRecentJobOffers = ((req, res) => {
-    jobOfferModel.find().sort({ 'insertionDate': -1 }).limit(10).then(function (jobs) {
-        res.send(jobs);
+    jobOfferModel.find().sort({ 'insertionDate': -1 }).populate('author', 'profileBoost').limit(10).then(function (jobs) {
+        let result = prioritizeJobOffers(jobs);
+        res.send(result);
     })
 });
 
@@ -146,3 +148,62 @@ exports.deleteJobOffer = ((req, res) => {
         })
     });
 });
+
+function prioritizeJobOffers(list) {
+    let boostedJobOffers = [];
+    for (let i = 0; i < list.length; i++) {
+
+        if (list[i].author.profileBoost) {
+            let boostedJobOffer = list[i];
+            boostedJobOffers.push(boostedJobOffer);
+
+        }        
+        //console.log(list[i]);
+        // userModel.findById(list[i].author._id).then(function (user, err) {
+        //     if (err) {
+        //         console.log(error);
+        //         res.send(error);
+        //     }
+        //     if (user.profileBoost) {
+        //         boostedJobOffers.push(list[i]);
+        //         //console.log(boostedJobOffers);
+        //     }
+        // });
+    }
+    //console.log(boostedJobOffers);
+    let random = getMultipleRandom(boostedJobOffers, 3);
+    list.forEach(elem => {
+        random.push(elem);
+    })
+    let transformedArray = [];
+    random.forEach(elem => {
+        transformedArray.push({
+            boost: elem.boost,
+            _id: elem._id,
+            title: elem.title,
+            description: elem.description,
+            priceExpectation: elem.priceExpectation,
+            category: elem.category,
+            author: elem._id,
+            postalCode: elem.postalCode,
+            images: elem.images,
+            insertionDate: elem.insertionDate,
+            updated_date: elem.updated_date,
+            __v: 0,
+        });
+    })
+    return transformedArray;
+
+};
+
+function getMultipleRandom(arr, num) {
+    /*
+    inefficient, but need to copy jobOffers instead of referencing it, otherwise the value is changed also in the initial set.
+    */
+    var newArray = JSON.parse(JSON.stringify(arr)); 
+    newArray.forEach(elem => {
+        elem.boost = true;
+    })
+    const shuffled = [...newArray].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, num);
+}
