@@ -142,13 +142,15 @@ exports.getMatchingProfiles = ((req, res) => {
         userModel.find({
             "settings.skills": {$elemMatch:{}}
         }).select(['-password']).then(function (jobs) {
-            res.send(jobs);
+            let result = prioritizeCraftsman(jobs);
+            res.send(result);
         })
     } else {
         userModel.find({
             "settings.skills.value": req.query.category,
         }).select(['-password']).then(function (jobs) {
-            res.send(jobs);
+            let result = prioritizeCraftsman(jobs);
+            res.send(result);
         })
     }
 });
@@ -159,14 +161,16 @@ exports.getMatchingProfilesInRange = ((req, res) => {
             "settings.skills": {$elemMatch:{}},
             "settings.postalCode": {$in: req.query.zips}
         }).select(['-password']).then(function (jobs) {
-            res.send(jobs);
+            let result = prioritizeCraftsman(jobs);
+            res.send(result);
         })
     } else {
         userModel.find({
             "settings.skills.value": req.query.category,
             "settings.postalCode": {$in: req.query.zips}
         }).select(['-password']).then(function (jobs) {
-            res.send(jobs);
+            let result = prioritizeCraftsman(jobs);
+            res.send(result);
         })
     }
 });
@@ -191,3 +195,33 @@ exports.payProfile = ((req, res) => {
         }
     })
 });
+
+function prioritizeCraftsman(list) {
+    let boosted = [];
+    for (let i = 0; i < list.length; i++) {
+
+        if (list[i].profileBoost) {
+            let boostedCraftsman = list[i];
+            boosted.push(boostedCraftsman);
+
+        }        
+    }
+    let random = getMultipleRandom(boosted, 3);
+    list.forEach(elem => {
+        random.push(elem);
+    })
+    return random;
+
+};
+
+function getMultipleRandom(arr, num) {
+    /*
+    inefficient, but need to copy jobOffers instead of referencing it, otherwise the value is changed also in the initial set.
+    */
+    var newArray = JSON.parse(JSON.stringify(arr)); 
+    newArray.forEach(elem => {
+        elem.boost = true;
+    })
+    const shuffled = [...newArray].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, num);
+}

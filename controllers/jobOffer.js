@@ -55,8 +55,6 @@ exports.getMatchingJobOffers = ((req, res) => {
             res.send(result);
         })
     } else {
-        console.log(req.query.category);
-
         jobOfferModel.find({
             category: req.query.category,
         }).sort({ 'insertionDate': -1 }).populate('author', 'profileBoost').then(function (jobs) {
@@ -164,19 +162,7 @@ function prioritizeJobOffers(list) {
             boostedJobOffers.push(boostedJobOffer);
 
         }        
-        //console.log(list[i]);
-        // userModel.findById(list[i].author._id).then(function (user, err) {
-        //     if (err) {
-        //         console.log(error);
-        //         res.send(error);
-        //     }
-        //     if (user.profileBoost) {
-        //         boostedJobOffers.push(list[i]);
-        //         //console.log(boostedJobOffers);
-        //     }
-        // });
     }
-    //console.log(boostedJobOffers);
     let random = getMultipleRandom(boostedJobOffers, 3);
     list.forEach(elem => {
         random.push(elem);
