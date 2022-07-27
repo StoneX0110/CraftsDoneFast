@@ -12,11 +12,11 @@ exports.createChat = ((req, res) => {
         chat: null
     }
     //get craftsman ID
-    userModel.find({username: chat.users.craftsman}).select(['_id']).then(function (usId, err) {
+    userModel.find({ username: chat.users.craftsman }).select(['_id']).then(function (usId, err) {
         let newCraftsman = usId[0]._id.valueOf();
         //get client ID
-        userModel.find({username: chat.users.client}).select(['_id']).then(function (usId2, err) {
-            chat.users = {craftsman: newCraftsman, client: usId2[0]._id.valueOf()};
+        userModel.find({ username: chat.users.client }).select(['_id']).then(function (usId2, err) {
+            chat.users = { craftsman: newCraftsman, client: usId2[0]._id.valueOf() };
             //save contract (still without chat ID)
             contractModel(contract).save((err, createdContract) => {
                 if (err) {
@@ -32,7 +32,7 @@ exports.createChat = ((req, res) => {
                         } else {
                             //update users to include chat ID
                             Object.keys(chat.users).forEach(key => {
-                                userModel.findByIdAndUpdate(chat.users[key], {$push: {"chats": createdChat.id}}).then(function (us, err) {
+                                userModel.findByIdAndUpdate(chat.users[key], { $push: { "chats": createdChat.id } }).then(function (us, err) {
                                     if (err) {
                                         console.log(err);
                                         res.send(err);
@@ -40,7 +40,7 @@ exports.createChat = ((req, res) => {
                                 })
                             })
                             //update contract to include chat ID
-                            contractModel.findByIdAndUpdate(createdContract._id.valueOf(), {$set: {'chat': createdChat}}).then(function (updatedContract, err) {
+                            contractModel.findByIdAndUpdate(createdContract._id.valueOf(), { $set: { 'chat': createdChat } }).then(function (updatedContract, err) {
                                 if (error) {
                                     console.log(err)
                                     res.send(err)
@@ -106,7 +106,7 @@ exports.getMyChats = ((req, res) => {
                     userModel.findById(partnerId).select(['username', 'profilePicture']).then(function (result) {
                         profilePicture = result.profilePicture;
                         partnerUsername = result.username;
-                        chatsWithMessages.push({chat: resultChat, partnerUsername: partnerUsername, profilePicture: profilePicture});
+                        chatsWithMessages.push({ chat: resultChat, partnerUsername: partnerUsername, profilePicture: profilePicture });
                         chatCounter++;
                         //if all chats are included, send result
                         if (chatCounter === chatIds.length) res.send(chatsWithMessages);
@@ -125,7 +125,7 @@ exports.postMessageToChat = ((req, res) => {
             console.log(err);
             res.send(err);
         } else {
-            chatModel.findByIdAndUpdate(createdMessage.chat, {$push: {"messages": createdMessage._id.valueOf()}}).then(function (updatedChat, err) {
+            chatModel.findByIdAndUpdate(createdMessage.chat, { $push: { "messages": createdMessage._id.valueOf() } }).then(function (updatedChat, err) {
                 if (err) {
                     console.log(err);
                     res.send(err);
@@ -146,7 +146,7 @@ exports.deleteChat = ((req, res) => {
             let counter = 0;
             //delete chat ids from users
             ['client', 'craftsman'].forEach(clientOrCraftsman => {
-                userModel.findByIdAndUpdate(deletedChat.users[clientOrCraftsman], {$pull: {"chats": deletedChat._id}}).then((updatedUser, err) => {
+                userModel.findByIdAndUpdate(deletedChat.users[clientOrCraftsman], { $pull: { "chats": deletedChat._id } }).then((updatedUser, err) => {
                     if (err) {
                         console.log(err);
                         res.send(err);
@@ -166,7 +166,7 @@ exports.deleteChat = ((req, res) => {
                 }
             })
             //delete messages
-            messageModel.deleteMany({chat: deletedChat._id}).then((deleted, err) => {
+            messageModel.deleteMany({ chat: deletedChat._id }).then((deleted, err) => {
                 if (err) {
                     console.log(err);
                     res.send(err);
@@ -186,7 +186,7 @@ exports.createContract = ((req, res) => {
             console.log(err);
             res.send(err);
         } else {
-            chatModel.findByIdAndUpdate(chatID, {$set: {"contract": createdContract._id.valueOf()}}).then(function (us, err) {
+            chatModel.findByIdAndUpdate(chatID, { $set: { "contract": createdContract._id.valueOf() } }).then(function (us, err) {
                 if (err) {
                     console.log(err);
                     res.send(err);
@@ -198,22 +198,33 @@ exports.createContract = ((req, res) => {
 
 exports.updateContract = ((req, res) => {
     const contract = req.body;
-    contractModel.findByIdAndUpdate(contract._id, {$set: contract}).then(function (updatedContract, err) {
+    contractModel.findByIdAndUpdate(contract._id, { $set: contract }).then(function (updatedContract, err) {
         if (err) {
             console.log(err);
             res.send(err);
         } else {
-            if(contract.paymentStatus === "jobCompleted") {
+            if (contract.paymentStatus === "jobCompleted") {
                 const stripe = require('stripe')('sk_test_51LFv4cGPYqiDG82L4wVgPAmMxa9d085aSrifwuJPyR9LrSBunr0HsEIO4JKCmjetkHKYbayXCAvAZ6cqFbTa8gwH00XPggZZQf');
-                // const transfer = stripe.transfers.create({
-                //     amount: updatedContract.amount,
-                //     currency: "usd",
-                //     destination: "4000056655665556",
-                // });
+                //  const transfer = stripe.transfers.create({
+                //      amount: updatedContract.amount,
+                //      currency: "usd",
+                //      destination: "acct_1LQClhHCIL5c3Gvb",
+                //  });
+                //  console.log(transfer);
                 /*
                 const payout = stripe.payouts.create({amount: 10, currency: 'eur'});
                 console.log(payout);
                 */
+                /*
+                this code will charge your amount in Stripe immediately by using the property of source and its value is "tok_bypassPending" ,it will make the available amount be activated..
+                */
+                const charge = stripe.charges.create({
+                    amount: contract.price * 100,
+                    currency: "usd",
+                    source: "tok_bypassPending",
+                    description: "Test Charge",
+                });
+                //console.log(charge);
             }
             res.send(updatedContract);
         }
