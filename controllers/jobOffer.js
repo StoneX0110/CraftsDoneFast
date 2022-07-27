@@ -70,7 +70,7 @@ exports.getMatchingJobOffersInRange = ((req, res) => {
             postalCode: { $in: req.query.zips }
         }).sort({ 'insertionDate': -1 }).populate('author', 'profileBoost').then(function (jobs) {
             let result = prioritizeJobOffers(jobs);
-            res.send(jresult);
+            res.send(result);
         })
     } else {
         jobOfferModel.find({
