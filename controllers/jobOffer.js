@@ -176,7 +176,7 @@ function prioritizeJobOffers(list) {
             description: elem.description,
             priceExpectation: elem.priceExpectation,
             category: elem.category,
-            author: elem._id,
+            author: elem.author._id,
             postalCode: elem.postalCode,
             images: elem.images,
             insertionDate: elem.insertionDate,
