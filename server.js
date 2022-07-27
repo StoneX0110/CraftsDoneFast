@@ -51,7 +51,6 @@ const io = new Server(httpServer, {
 });
 
 io.on("connection", (socket) => {
-    console.log('a user connected - socket ' + socket.id);
     //from https://stackoverflow.com/a/19150254
     socket.on('create', function (room) {
         if (!socket.rooms.has(room)) {

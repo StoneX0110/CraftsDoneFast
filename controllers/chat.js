@@ -203,6 +203,18 @@ exports.updateContract = ((req, res) => {
             console.log(err);
             res.send(err);
         } else {
+            if(contract.paymentStatus === "jobCompleted") {
+                const stripe = require('stripe')('sk_test_51LFv4cGPYqiDG82L4wVgPAmMxa9d085aSrifwuJPyR9LrSBunr0HsEIO4JKCmjetkHKYbayXCAvAZ6cqFbTa8gwH00XPggZZQf');
+                // const transfer = stripe.transfers.create({
+                //     amount: updatedContract.amount,
+                //     currency: "usd",
+                //     destination: "4000056655665556",
+                // });
+                /*
+                const payout = stripe.payouts.create({amount: 10, currency: 'eur'});
+                console.log(payout);
+                */
+            }
             res.send(updatedContract);
         }
     })
