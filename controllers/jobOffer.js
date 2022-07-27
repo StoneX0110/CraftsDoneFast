@@ -50,14 +50,18 @@ exports.getJobOffer = ((req, res) => {
 // returns jobs matching attributes
 exports.getMatchingJobOffers = ((req, res) => {
     if (req.query.category === "Any") {
-        jobOfferModel.find().sort({ 'insertionDate': -1 }).then(function (jobs) {
-            res.send(jobs);
+        jobOfferModel.find().sort({ 'insertionDate': -1 }).populate('author', 'profileBoost').then(function (jobs) {
+            let result = prioritizeJobOffers(jobs);
+            res.send(result);
         })
     } else {
+        console.log(req.query.category);
+
         jobOfferModel.find({
             category: req.query.category,
-        }).sort({ 'insertionDate': -1 }).then(function (jobs) {
-            res.send(jobs);
+        }).sort({ 'insertionDate': -1 }).populate('author', 'profileBoost').then(function (jobs) {
+            let result = prioritizeJobOffers(jobs);
+            res.send(result);
         })
     }
 });
@@ -66,15 +70,17 @@ exports.getMatchingJobOffersInRange = ((req, res) => {
     if (req.query.category === "Any") {
         jobOfferModel.find({
             postalCode: { $in: req.query.zips }
-        }).sort({ 'insertionDate': -1 }).then(function (jobs) {
-            res.send(jobs);
+        }).sort({ 'insertionDate': -1 }).populate('author', 'profileBoost').then(function (jobs) {
+            let result = prioritizeJobOffers(jobs);
+            res.send(jresult);
         })
     } else {
         jobOfferModel.find({
             category: req.query.category,
             postalCode: { $in: req.query.zips }
-        }).sort({ 'insertionDate': -1 }).then(function (jobs) {
-            res.send(jobs);
+        }).sort({ 'insertionDate': -1 }).populate('author', 'profileBoost').then(function (jobs) {
+            let result = prioritizeJobOffers(jobs);
+            res.send(result);
         })
     }
 });
