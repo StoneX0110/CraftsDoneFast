@@ -102,3 +102,9 @@ Fix: delete node_modules folder and execute
 ```
 npm install --force
 ```
+
+# Requirements before setting the application online
+
+### Define passwords for connecting to the database and exclude them from code.
+
+### Replace the public and secret key within the stripe payment form in the frontend and in the backend api chat/updateContract to keys for live transactions. Currently test api keys are used.
