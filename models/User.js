@@ -30,7 +30,8 @@ let userSchema = new Schema({
             postalCode: Number,
             shortDescription: String,
             description: String,
-            skills: [{value: String, label: String}]
+            skills: [{value: String, label: String}],
+            stripeID: String,
         },
         profilePicture: {
             data: Buffer,

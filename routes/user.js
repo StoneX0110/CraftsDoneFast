@@ -14,7 +14,8 @@ const {
     getAverageCraftsmanRating,
     getCustomerRatings,
     getCraftsmanRatings,
-    payProfile
+    payProfile,
+    updateUserStripeID
 } = require("../controllers/user.js");
 const verifyToken = authJwt.verifyToken;
 
@@ -37,6 +38,8 @@ router.route('/insertCustomerRating').post(insertCustomerRating);
 router.route('/insertCraftsmanRating').post(insertCraftsmanRating);
 
 router.route('/update').post([verifyToken], updateUser);
+
+router.route('/updateUserStripeID').post([verifyToken], updateUserStripeID)
 
 router.route('/updateUserChats').post(updateUserChats);
 

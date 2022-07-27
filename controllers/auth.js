@@ -26,6 +26,7 @@ exports.signup = (req, res) => {
             postalCode: null,
             shortDescription: '',
             description: '',
+            stripeID: '',
         },
     };
     if (user.username.includes(" ")) {

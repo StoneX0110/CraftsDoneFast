@@ -40,6 +40,18 @@ exports.updateUserChats = ((req, res) => {
     })
 });
 
+exports.updateUserStripeID = ((req, res) => {
+    const user = req.body;
+    userModel.findByIdAndUpdate(user.id, {$set: {"settings.stripeID": user.stripeID}}).then(function (us, err) {
+        if (err) {
+            console.log(err);
+            res.send(err);
+        } else {
+            res.send(us);
+        }
+    })
+});
+
 /*
 Syntax (example):
 var body = {
