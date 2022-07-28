@@ -222,8 +222,9 @@ exports.updateContract = ((req, res) => {
                     amount: contract.price * 100,
                     currency: "usd",
                     source: "tok_bypassPending",
-                    description: "Test Charge",
+                    description: 'Craftsman payout with contractID: ' + contract._id,
                 });
+                console.log(contract)
                 //console.log(charge);
             }
             res.send(updatedContract);
