@@ -34,10 +34,12 @@ const jobOfferAPI = require('./routes/jobOffer');
 const authAPI = require('./routes/auth');
 const userAPI = require('./routes/user');
 const chatAPI = require('./routes/chat');
+const paymentAPI = require('./routes/payment');
 app.use('/api/jobOffer', jobOfferAPI);
 app.use('/api/auth', authAPI);
 app.use('/api/user', userAPI);
 app.use('/api/chat', chatAPI);
+app.use('/api/payment', paymentAPI)
 
 
 //handle messaging
