@@ -193,7 +193,6 @@ exports.confirmPayment = ((req, res) => {
 });
 
 exports.payProfile = ((req, res) => {
-    const paymentMethod = req.body;
     userModel.findByIdAndUpdate(req.userId, {
         $set: {
             "profileBoost": true,
