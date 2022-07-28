@@ -224,7 +224,6 @@ exports.updateContract = ((req, res) => {
                     source: "tok_bypassPending",
                     description: 'Craftsman payout with contractID: ' + contract._id,
                 });
-                console.log(contract)
                 //console.log(charge);
             }
             res.send(updatedContract);
