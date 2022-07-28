@@ -40,9 +40,9 @@ exports.updateUserChats = ((req, res) => {
     })
 });
 
-exports.updateUserStripeID = ((req, res) => {
+exports.updateUserIBAN = ((req, res) => {
     const user = req.body;
-    userModel.findByIdAndUpdate(user.id, {$set: {"settings.stripeID": user.stripeID}}).then(function (us, err) {
+    userModel.findByIdAndUpdate(user.id, {$set: {"settings.IBAN": user.IBAN}}).then(function (us, err) {
         if (err) {
             console.log(err);
             res.send(err);

@@ -31,7 +31,7 @@ let userSchema = new Schema({
             shortDescription: String,
             description: String,
             skills: [{value: String, label: String}],
-            stripeID: String,
+            IBAN: String,
         },
         profilePicture: {
             data: Buffer,
